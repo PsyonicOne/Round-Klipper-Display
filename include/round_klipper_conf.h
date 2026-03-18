@@ -1,0 +1,36 @@
+// Custom definitions for Round Screen Klipper Panel
+// This file contains pin definitions, color schemes, and other configuration settings for the UI and main program.
+//Adjust these settings to customize the behavior and appearance of your round screen panel.
+
+// TFT pin definitions for ESP32-2424S012C-I (AliExpress Round Screen - https://www.aliexpress.com/item/1005010512426009.html)
+// If you have a different screen this may need to be modified
+#define LCD_CS   10
+#define LCD_DC   2
+#define LCD_RST  1
+#define LCD_SCK  6
+#define LCD_MOSI 7
+
+// Touch pin definitions for ESP32-2424S012C-I (AliExpress Round Screen - https://www.aliexpress.com/item/1005010512426009.html)
+// If you have a different screen this may need to be modified
+#define TOUCH_SDA 4
+#define TOUCH_SCL 5
+#define TOUCH_I2C_ADDR 0x15
+
+// Moonraker connection settings
+#define MOONRAKER_HOST "klipper.local" // Your Klipper Hostname or IP address (klipper.local should work if set up correctly on your network)
+#define MOONRAKER_PORT 7125  // Default Moonraker port
+#define MOONRAKER_API_KEY "30c54741364a44b693dee7cdefbe7178" // Your Moonraker API key (http://klipper.local/access/api_key should display your key)
+
+// WiFi credentials - CHANGE THESE TO SUIT YOUR WIFI NETWORK
+#define WIFI_SSID "cable2.linux.hom"
+#define WIFI_PASSWORD "rockycanoe969"
+#define HOST_NAME "ENDER3_PANEL"
+
+// Button names and macros - these are the G-code macros that will be sent to Klipper when the buttons are pressed.
+// You can change these to match your macro names in Klipper.
+#define RESUME_BTN_NAME "RESUME" // Word displayed on top button (curved at top so will look wrong if modified to something other than 6 characters)
+#define RESUME_BTN_MACRO "RESUME" // Macro name to execute when top button is pressed
+#define BOTTOM_LEFT_BTN_NAME "LOAD" // Word displayed on bottom left button
+#define BOTTOM_LEFT_BTN_MACRO "LOAD_FILAMENT" // Macro name to execute when bottom left button is pressed
+#define BOTTOM_RIGHT_BTN_NAME "UNLOAD" // Word displayed on bottom right button
+#define BOTTOM_RIGHT_BTN_MACRO "UNLOAD_FILAMENT" // Macro name to execute when bottom right button is pressed
