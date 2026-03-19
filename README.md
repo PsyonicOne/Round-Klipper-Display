@@ -1,23 +1,36 @@
 # Round Klipper Display
 
-A custom round LCD touch panel for Klipper 3D printer firmware, built with ESP32-C3 and LVGL.
+A custom round LCD touch panel for Klipper 3D printer firmware, built with a super cheap, round touch screen.
 
 ## Overview
 
-This project provides a graphical touch interface for Klipper-based 3D printers using a round 240x240 LCD display. It connects to Moonraker (Klipper's API server) via WebSocket to display real-time printer status and temperatures.
+This project provides a very basic graphical touch interface for Klipper-based 3D printers using a round 240x240 LCD display.
+It connects to Moonraker (Klipper's API server) via WebSocket to display real-time printer status and temperatures.
+It has 3 configurable buttons for telling Klipper to run a macro.
 
 ![Round Display](https://img.shields.io/badge/Display-240x240_round-blue)
 ![ESP32-C3](https://img.shields.io/badge/Device-ESP32--C3-green)
 ![Klipper](https://img.shields.io/badge/Klipper-Compatible-orange)
 
+## Purpose
+
+Like most Klipper uses of custom printers I run my printers 100% from my PC. The problem is when I have to preform a task that requires me to be physically standing at my printer.
+The 3 tasks that require me to be physically at the printer is Loading new filament, Unloading filament, and Resuming after a pause/colour change where I need to remove purged material.
+These 3 tasks required that I click a button on my PC, then get over to the printer in time. Loading and unloading filament wasn't really an issue but Resuming a print could be a problem.
+So I created this extremely simple, cheap and easy to use display.
+The 3 buttons can be customized with any name you want (assuming it fits) and to send any macro name to Klipper you want run. This is all configurable from a single config file (round_klipper_conf.h)
+
 ## Hardware
 
-- **Board**: ESP32-C3 (ESP32-2424S012C-I Round LCD Module)
+- **Device**: ESP32-2424S012C-I Round LCD Module from AliExpress - https://www.aliexpress.com/item/1005010512426009.html
+- **USB Cable**: Flat USD-C cable from Amazon - This is the Australian one - https://www.amazon.com.au/dp/B0FPCMK1J1
+- **Board**: ESP32-C3
 - **Display**: GC9A01 Round LCD (240x240 pixels)
 - **Touch Controller**: CST816S / GT911 (I2C)
-- **Resolution**: 240 x 240 pixels (circular)
 
 ### Pin Configuration
+
+This is the default pin configuration for the device I used, if you use a different device this may need to be changed
 
 | Function | GPIO Pin |
 |----------|----------|
@@ -31,27 +44,25 @@ This project provides a graphical touch interface for Klipper-based 3D printers 
 
 ## Features
 
-- **Real-time Temperature Display**: Shows hotend and bed temperatures
-- **Print Status**: Displays current printer state (printing, idle, ready, etc.)
-- **Touch Controls**: Three interactive buttons for:
-  - Resume Print
-  - Load Filament
-  - Unload Filament
+- **Real-time Temperature Display**: Shows hotend and bed temperatures in real time
+- **Print Status**: Displays current printer state as a coloured arc that changes colour depending on the printer state, while printing it animates slightly
+- **Touch Controls**: Three fully customizable buttons
 - **WebSocket Connection**: Direct communication with Moonraker API
 - **Custom UI**: Round-optimized interface using LVGL
+- **Custom Touch Driver**: I couldn't find a touch driver that worked so made my own
 
 ## Prerequisites
 
 ### Klipper Setup
 
-1. Install [Klipper](https://www.klipper3d.org/) on your 3D printer
-2. Install [Moonraker](https://github.com/Arksine/moonraker) (usually included with Klipper)
-3. Get your Moonraker API key:
-   - Navigate to `http://klipper.local/access/api_key`
-   - Note down your API key
+1. Know your Klipper network address - 'klipper.local' is preferred if it's set up that way
+2. Get your Moonraker API key:
+   - Navigate to `http://klipper.local/access/api_key` Or swap 'klipper.local' with your Klipper IP address
+   - Copy your API key into Round_klipper_conf.h
 
 ### Software Requirements
 
+- VSCode (recommended)
 - [PlatformIO](https://platformio.org/) (recommended)
 - Arduino framework
 - LVGL v9.1.0+
@@ -72,23 +83,24 @@ Edit [`include/round_klipper_conf.h`](include/round_klipper_conf.h) and update:
 
 ```cpp
 // WiFi credentials
-#define WIFI_SSID "Your_WiFi_SSID"
-#define WIFI_PASSWORD "Your_WiFi_Password"
-#define HOST_NAME "ENDER3_PANEL"
+#define WIFI_SSID "Your_WiFi_SSID"         // Your WiFi network name (SSID)
+#define WIFI_PASSWORD "Your_WiFi_Password" // Your WiFi network password
+#define HOST_NAME "Hostname"               // Hostname for your device on the network (optional, but can be helpful for identifying it)
 
 // Moonraker connection
-#define MOONRAKER_HOST "klipper.local"  // Your Klipper hostname/IP
-#define MOONRAKER_PORT 7125              // Default Moonraker port
-#define MOONRAKER_API_KEY "your_api_key" // Your Moonraker API key
+#define MOONRAKER_HOST "klipper.local"    // Your Klipper hostname/IP
+#define MOONRAKER_PORT 7125               // Default Moonraker port
+#define MOONRAKER_API_KEY "your_api_key"  // Your Moonraker API key
 ```
 
 ### 3. Configure Button Macros
 
-Update the button actions in [`include/round_klipper_conf.h`](include/round_klipper_conf.h) to match your Klipper macros:
+Update the button actions in [`include/round_klipper_conf.h`](include/round_klipper_conf.h) to match your Klipper macros
+The default ones are from my configuration, you will need to make sure the macro names match your Klipper macros:
 
 ```cpp
-#define RESUME_BTN_MACRO "RESUME"           // Macro to resume print
-#define BOTTOM_LEFT_BTN_MACRO "LOAD_FILAMENT"  // Macro to load filament
+#define RESUME_BTN_MACRO "RESUME"                // Macro to resume print
+#define BOTTOM_LEFT_BTN_MACRO "LOAD_FILAMENT"    // Macro to load filament
 #define BOTTOM_RIGHT_BTN_MACRO "UNLOAD_FILAMENT" // Macro to unload filament
 ```
 
