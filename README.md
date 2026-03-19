@@ -159,16 +159,13 @@ Print it however you like, there will be some areas that need supports, I don't 
 The diameter where the display goes in is a slight press fit, it should have some resistance when inserted.
 The hole through the mount is the get the display out if required, ask me how I figured that out!
 
-
-The little clips slide into the profile of the extrusion:
+<br/>
+&nbsp;<br/>
+The little clips slide into the profile of the extrusion.
 <div align="center">
     <img src="images/Clips in Ext.png" alt="Clips" width="300">
 </div>
 
-<br/>
-&nbsp;<br/>
-<br/>
-&nbsp;<br/>
 <br/>
 &nbsp;<br/>
 It's easier to push the clips into the Mount first, then push the clips into the profile.
@@ -178,7 +175,8 @@ With all the tolerances they should be a bit of a friction fit and not require a
     <img src="images/Clips in Mount.png" alt="Clips" width="300">
 </div>
 
-
+<br/>
+&nbsp;<br/>
 The cutout in the bottom of the housing for the USB cable to pass through is slightly offset.
 This was because the 2 particular displays I received were slightly off from where the screen graphics displayed and where the USB plugged in. Should you need a slightly different orientation please let me know and I'll add a variant.
 <div align="center">
