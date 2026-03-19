@@ -153,17 +153,26 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 ## Print the Mount
 
 The file for printing can be found in [`prints/`](prints/)
-The model is for the Enders with 40x40mm extrusion base, like the Ender 3 variants.
+The model is designed for the Enders with 40x40mm extrusion base, like the Ender 3 variants.
+
+Print it however you like, there will be some areas that need supports, I don't use supports inside the holes for the clips and inside the back cavity.
+The diameter where the display goes in is a slight press fit, it should have some resistance when inserted.
+The hole through the mount is the get the display out if required, ask me how I figured that out!
+
 
 The little clips slide into the profile of the extrusion:
 <div align="center">
     <img src="images/Clips in Ext.png" alt="Clips" width="300">
 </div>
 
+
 It's easier to push the clips into the Mount first, then push the clips into the profile.
+Do not glue the clips in, you'll need to adjust them as you slide them into the profile.
+With all the tolerances they should be a bit of a friction fit and not require any glue.
 <div align="center">
     <img src="images/Clips in Mount.png" alt="Clips" width="300">
 </div>
+
 
 The cutout in the bottom of the housing for the USB cable to pass through is slightly offset.
 This was because the 2 particular displays I received were slightly off from where the screen graphics displayed and where the USB plugged in. Should you need a slightly different orientation please let me know and I'll add a variant.
