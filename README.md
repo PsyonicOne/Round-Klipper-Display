@@ -87,7 +87,7 @@ This is the default pin configuration for the device I used, if you use a differ
 ### 1. Clone the Repository
 
 ```bash
-git clone https://github.com/yourusername/Round-Klipper-Display.git
+git clone https://github.com/PsyonicOne/Round-Klipper-Display.git
 cd Round-Klipper-Display
 ```
 
@@ -134,6 +134,7 @@ pio device monitor
 ```
 
 ## Dependencies
+These should be automatically downloaded when you open the project with PlatformIO running in VSCode
 
 - [LVGL](https://lvgl.io/) v9.1.0+ - Graphics library
 - [WebSockets](https://github.com/Links2004/ArduinoWebSockets) - WebSocket client for Moonraker
@@ -152,7 +153,7 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 
 ## Print the Mount
 
-The file for printing can be found in [`prints/`](prints/)
+The files for printing can be found in [`prints/`](prints/)
 The model is designed for the Enders with 40x40mm extrusion base, like the Ender 3 variants.
 
 Print it however you like, there will be some areas that need supports, I don't use supports inside the holes for the clips and inside the back cavity.
