@@ -2,6 +2,13 @@
 
 A custom round LCD touch panel for Klipper 3D printer firmware, built with a super cheap, round touch screen.
 
+<div align="left">
+    <img src="images/Screen.png" alt="Round Display" width="300">
+</div>
+<div align="right">
+    <img src="images/On Printer.png" alt="Round Display" width="300">
+</div>
+
 ## Overview
 
 This project provides a very basic graphical touch interface for Klipper-based 3D printers using a round 240x240 LCD display.
@@ -16,17 +23,19 @@ It has 3 configurable buttons for telling Klipper to run a macro.
 
 Like most Klipper uses of custom printers I run my printers 100% from my PC. The problem is when I have to preform a task that requires me to be physically standing at my printer.
 The 3 tasks that require me to be physically at the printer is Loading new filament, Unloading filament, and Resuming after a pause/colour change where I need to remove purged material.
-These 3 tasks required that I click a button on my PC, then get over to the printer in time. Loading and unloading filament wasn't really an issue but Resuming a print could be a problem.
+These 3 tasks required that I click a button on my PC, then get over to the printer in time to perform the task. Loading and unloading filament wasn't really an issue but Resuming a print could be a problem.
 So I created this extremely simple, cheap and easy to use display.
-The 3 buttons can be customized with any name you want (assuming it fits) and to send any macro name to Klipper you want run. This is all configurable from a single config file (round_klipper_conf.h)
+The 3 buttons can be customized with any name you want (assuming it fits on the button) and to send any macro name to Klipper you want run. This is all configurable from a single config file (round_klipper_conf.h)
 
 ## Hardware
 
-- **Device**: ESP32-2424S012C-I Round LCD Module from AliExpress
+- **Display**: ESP32-2424S012C-I Round LCD Module from AliExpress
 https://www.aliexpress.com/item/1005010512426009.html
 <div align="left">
     <img src="images/display.png" alt="Round Display" width="300">
 </div>
+
+
 - **USB Cable**: Flat USB-C cable from Amazon
 This is the Australian one - https://www.amazon.com.au/dp/B0FPCMK1J1
 <div align="left">
