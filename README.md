@@ -24,11 +24,14 @@ The 3 buttons can be customized with any name you want (assuming it fits) and to
 
 - **Device**: ESP32-2424S012C-I Round LCD Module from AliExpress
 https://www.aliexpress.com/item/1005010512426009.html
-<div align="center">
+<div align="left">
     <img src="images/display.png" alt="Round Display" width="300">
 </div>
 - **USB Cable**: Flat USB-C cable from Amazon
-This is the Australian one - https://www.amazon.com.au/dp/B0FPCMK1J1  ![USB-C Cable](images/USB_cable.png)
+This is the Australian one - https://www.amazon.com.au/dp/B0FPCMK1J1
+<div align="left">
+    <img src="images/USB_cable.png" alt="USB-C Cable" width="300">
+</div>
 
 ### Pin Configuration
 
