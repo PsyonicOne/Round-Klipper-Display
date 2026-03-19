@@ -34,3 +34,4 @@
 #define BOTTOM_LEFT_BTN_MACRO "LOAD_FILAMENT" // Macro name to execute when bottom left button is pressed
 #define BOTTOM_RIGHT_BTN_NAME "UNLOAD" // Word displayed on bottom right button
 #define BOTTOM_RIGHT_BTN_MACRO "UNLOAD_FILAMENT" // Macro name to execute when bottom right button is pressed
+
