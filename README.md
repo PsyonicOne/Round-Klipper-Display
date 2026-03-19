@@ -22,11 +22,11 @@ The 3 buttons can be customized with any name you want (assuming it fits) and to
 
 ## Hardware
 
-- **Device**: ESP32-2424S012C-I Round LCD Module from AliExpress - https://www.aliexpress.com/item/1005010512426009.html
-- **USB Cable**: Flat USD-C cable from Amazon - This is the Australian one - https://www.amazon.com.au/dp/B0FPCMK1J1
-- **Board**: ESP32-C3
-- **Display**: GC9A01 Round LCD (240x240 pixels)
-- **Touch Controller**: CST816S / GT911 (I2C)
+- **Device**: ESP32-2424S012C-I Round LCD Module from AliExpress
+https://www.aliexpress.com/item/1005010512426009.html
+![Round Display](images/display.png)
+- **USB Cable**: Flat USB-C cable from Amazon
+This is the Australian one - https://www.amazon.com.au/dp/B0FPCMK1J1
 
 ### Pin Configuration
 
