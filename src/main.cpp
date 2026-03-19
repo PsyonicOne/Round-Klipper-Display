@@ -33,6 +33,12 @@ static float hotendTemp;
 static float bedTemp;
 static String state;
 
+// Screen blanking state
+static bool screenBlanked = false;
+static bool touchWasActive = false;
+static uint32_t lastScreenStateCheck = 0;
+static uint32_t lastTouchWakeCheck = 0;
+
 // LVGL input device
 static lv_indev_t *indev_touch = nullptr;
 
@@ -170,6 +176,7 @@ static void touch_read_cb(lv_indev_t* indev, lv_indev_data_t* data) {
         data->point.x = x;
         data->point.y = y;
         data->state = LV_INDEV_STATE_PRESSED;
+        touchWasActive = true;  // Track touch activity for screen wake
     } else {
         data->state = LV_INDEV_STATE_RELEASED;
     }
@@ -205,10 +212,10 @@ void setup() {
     
     // Initialize LVGL
     lv_init();
-    
+
     // Initialize display driver
     gc9a01_lvgl_init(&tft);
-    
+
     // Create display - using partial render mode
     display = lv_display_create(240, 240);
     lv_display_set_color_format(display, LV_COLOR_FORMAT_RGB565);
@@ -275,13 +282,15 @@ void setup() {
 
 void loop() {
     
-    // Update temperatures every 2 seconds
+    // Update temperatures every 2 seconds (only if screen is not blanked)
     if (millis() - lastTempUpdate > 2000) {
         lastTempUpdate = millis();
         
-        // Update UI with current temperature values
-        ui_updateTemperatures(hotendTemp, bedTemp);
-        ui_updateStatus(state);
+        // Only update UI when screen is not blanked
+        if (!screenBlanked) {
+            ui_updateTemperatures(hotendTemp, bedTemp);
+            ui_updateStatus(state);
+        }
         
         Serial.print("Updated: ");
         Serial.print(hotendTemp);
@@ -295,6 +304,46 @@ void loop() {
     lv_tick_inc(1);
     lv_timer_handler();
     
+    // Screen blanking logic
+    // Check every 500ms to avoid excessive processing
+    if (millis() - lastScreenStateCheck > 500) {
+        lastScreenStateCheck = millis();
+        
+        uint32_t inactiveTime = lv_disp_get_inactive_time(lv_display_get_default());
+        uint32_t inactiveSeconds = inactiveTime / 1000; // Convert ms to seconds
+        
+        // Check if we should blank the screen
+        // Blank if: state is NOT "printing" AND inactive > BLANK_TIMEOUT
+        bool isPrinting = (state == "printing");
+        
+        if (!screenBlanked && !isPrinting && inactiveSeconds > SCREEN_BLANK_TIMEOUT_SECS) {
+            // Blank the screen
+            tft.setBacklight(SCREEN_BACKLIGHT_OFF);
+            screenBlanked = true;
+            Serial.println("Screen blanked (inactive)");
+        }
+        else if (screenBlanked) {
+            // Screen is blanked - check if touch should wake it
+            // Only wake on actual touch activity, not just UI updates
+            if (touchWasActive) {
+                // Reset touch flag
+                touchWasActive = false;
+                // Only wake if touch happened recently (within last second)
+                if (inactiveSeconds < 1) {
+                    tft.setBacklight(SCREEN_BACKLIGHT_ON);
+                    screenBlanked = false;
+                    Serial.println("Screen woken up (touch)");
+                }
+            }
+        }
+    }
+    
+    // Reset touch flag after a delay to avoid stale touch events
+    if (millis() - lastTouchWakeCheck > 2000) {
+        lastTouchWakeCheck = millis();
+        touchWasActive = false;
+    }
+
     // Handle Moonraker WebSocket
     MoonrakerWS.loop();
 

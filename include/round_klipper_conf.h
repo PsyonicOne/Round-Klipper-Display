@@ -35,3 +35,8 @@
 #define BOTTOM_RIGHT_BTN_NAME "UNLOAD" // Word displayed on bottom right button
 #define BOTTOM_RIGHT_BTN_MACRO "UNLOAD_FILAMENT" // Macro name to execute when bottom right button is pressed
 
+// Screen blanking settings
+#define SCREEN_BLANK_TIMEOUT_SECS 120 // Screen will go blank when: state is NOT "printing" AND inactive for this many seconds
+#define SCREEN_WAKE_TIMEOUT_SECS 10 // Screen will wake up when inactive for less than this many seconds
+#define SCREEN_BACKLIGHT_ON 100 // Backlight brightness level when screen is active (0-255)
+#define SCREEN_BACKLIGHT_OFF 0 // Backlight brightness level when screen is blanked (0-255, set to 0 for complete off)

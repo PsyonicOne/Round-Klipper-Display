@@ -18,7 +18,6 @@ It has 3 configurable buttons for telling Klipper to run macros.
 ![Round Display](https://img.shields.io/badge/Display-240x240_round-blue)
 ![ESP32-C3](https://img.shields.io/badge/Device-ESP32--C3-green)
 ![Klipper](https://img.shields.io/badge/Klipper-Compatible-orange)
-[![Clones](http://localhost:8000/badge/Round-Klipper-Display/total.svg)](https://github.com/PsyonicOne/Round-Klipper-Display/graphs/traffic)
 
 ## Purpose
 
