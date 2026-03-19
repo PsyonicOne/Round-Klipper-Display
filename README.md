@@ -69,14 +69,14 @@ This is the default pin configuration for the device I used, if you use a differ
 
 ### Klipper Setup
 
-1. Know your Klipper network address - 'klipper.local' is preferred if it's set up that way
+1. Know your Klipper network address - 'klipper.local' is preferred if it's set up that way.
 2. Get your Moonraker API key:
-   - Navigate to `http://klipper.local/access/api_key` Or swap 'klipper.local' with your Klipper IP address
-   - Copy your API key into Round_klipper_conf.h
+   - Navigate to `http://klipper.local/access/api_key` Or swap 'klipper.local' with your Klipper IP address.
+   - Copy your API key into [`include/round_klipper_conf.h`](include/round_klipper_conf.h)
 
 ### Software Requirements
 
-- VSCode (recommended)
+- VSCode (recommended but not strictly required)
 - [PlatformIO](https://platformio.org/) (recommended)
 - Arduino framework
 - LVGL v9.1.0+
@@ -109,7 +109,7 @@ Edit [`include/round_klipper_conf.h`](include/round_klipper_conf.h) and update:
 
 ### 3. Configure Button Macros
 
-Update the button actions in [`include/round_klipper_conf.h`](include/round_klipper_conf.h) to match your Klipper macros
+Update the button actions in [`include/round_klipper_conf.h`](include/round_klipper_conf.h) to match your Klipper macros.
 The default ones are from my configuration, you will need to make sure the macro names match your Klipper macros:
 
 ```cpp
@@ -134,7 +134,7 @@ pio device monitor
 ```
 
 ## Dependencies
-These should be automatically downloaded when you open the project with PlatformIO running in VSCode
+These should be automatically downloaded when you open the project with PlatformIO running in VSCode.
 
 - [LVGL](https://lvgl.io/) v9.1.0+ - Graphics library
 - [WebSockets](https://github.com/Links2004/ArduinoWebSockets) - WebSocket client for Moonraker
