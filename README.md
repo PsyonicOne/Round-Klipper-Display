@@ -4,10 +4,10 @@ A custom round LCD touch panel for Klipper 3D printer firmware, built with a sup
 
 <div align="left">
     <img src="images/Screen.png" alt="Round Display" width="300">
-</div>
-<div align="right">
     <img src="images/On Printer.png" alt="Round Display" width="300">
 </div>
+<!-- <div align="right">
+</div> -->
 
 ## Overview
 
