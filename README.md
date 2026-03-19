@@ -7,7 +7,7 @@ A custom round LCD touch panel for Klipper 3D printer firmware, built with ESP32
 This project provides a graphical touch interface for Klipper-based 3D printers using a round 240x240 LCD display. It connects to Moonraker (Klipper's API server) via WebSocket to display real-time printer status and temperatures.
 
 ![Round Display](https://img.shields.io/badge/Display-240x240_round-blue)
-![ESP32-C3](https://img.shields.io/badge/ESP32-C3?label=Device)
+![ESP32-C3](https://img.shields.io/badge/ESP32_C3?label=Device)
 ![Klipper](https://img.shields.io/badge/Klipper-Compatible-orange)
 
 ## Hardware
