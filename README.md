@@ -2,7 +2,7 @@
 
 A custom round LCD touch panel for Klipper 3D printer firmware, built with a super cheap, round touch screen.
 
-<div align="left">
+<div align="center">
     <img src="images/Screen.png" alt="Round Display" width="300">
     <img src="images/On Printer.png" alt="Round Display" width="300">
 </div>
@@ -44,7 +44,7 @@ This is the Australian one - https://www.amazon.com.au/dp/B0FPCMK1J1
 
 ### Pin Configuration
 
-This is the default pin configuration for the device I used, if you use a different device this may need to be changed
+This is the default pin configuration for the device I used, if you use a different device you can modify the pin definitions in [`include/round_klipper_conf.h`](include/round_klipper_conf.h):
 
 | Function | GPIO Pin |
 |----------|----------|
@@ -120,7 +120,7 @@ The default ones are from my configuration, you will need to make sure the macro
 
 ### 4. Build and Upload
 
-Using PlatformIO:
+You are better off using the PlatformIO buttons in VSCode, but if you're more comfortable with the CLI:
 
 ```bash
 # Build the project
@@ -132,87 +132,6 @@ pio run --target upload
 # Monitor serial output
 pio device monitor
 ```
-
-## Project Structure
-
-```
-Round-Klipper-Display/
-├── include/
-│   ├── round_klipper_conf.h    # Configuration (WiFi, Moonraker, buttons)
-│   ├── GC9A01.h                 # Display driver header
-│   ├── CST816S.h               # Touch controller header
-│   ├── UI.h                    # UI function declarations
-│   └── lv_conf.h               # LVGL configuration
-├── src/
-│   ├── main.cpp                # Main program
-│   ├── GC9A01.cpp              # Display driver implementation
-│   ├── CST816S.cpp             # Touch controller implementation
-│   ├── UI.cpp                  # UI implementation
-│   └── lv_drivers/
-│       └── display/
-│           └── GC9A01_lvgl.cpp  # LVGL display driver
-├── lib/
-│   └── CTouch/                 # Touch library (GT911 compatible)
-├── platformio.ini              # PlatformIO configuration
-└── README.md                   # This file
-```
-
-## Customization
-
-### Changing Display Pins
-
-If you're using a different round display module, modify the pin definitions in [`include/round_klipper_conf.h`](include/round_klipper_conf.h):
-
-```cpp
-#define LCD_CS   10
-#define LCD_DC   2
-#define LCD_RST  1
-#define LCD_SCK  6
-#define LCD_MOSI 7
-
-#define TOUCH_SDA 4
-#define TOUCH_SCL 5
-#define TOUCH_I2C_ADDR 0x15
-```
-
-### Adjusting Touch Rotation
-
-In [`src/main.cpp`](src/main.cpp), change the touch rotation:
-
-```cpp
-touch.setRotation(CTouchRotation::ROTATION_0);  // 0, 90, 180, or 270
-```
-
-### Modifying the UI
-
-The UI is built with LVGL in [`src/UI.cpp`](src/UI.cpp). You can customize:
-- Colors and fonts
-- Button layouts
-- Animation effects
-- Additional information display
-
-## Troubleshooting
-
-### Display Not Working
-- Check SPI connections (SCK, MOSI, CS, DC)
-- Verify display controller is GC9A01
-- Check voltage (should be 3.3V)
-
-### Touch Not Responding
-- Verify I2C connections (SDA, SCL)
-- Check touch controller I2C address (default 0x15)
-- Ensure correct pull-up resistors on I2C lines
-
-### Cannot Connect to Moonraker
-- Verify WiFi credentials
-- Check Moonraker is running on your Klipper host
-- Ensure API key is correct
-- Verify network connectivity (ping klipper.local)
-
-### Temperature Not Updating
-- Check Moonraker WebSocket connection
-- Verify API key permissions
-- Ensure Klipper is running and printer is connected
 
 ## Dependencies
 
@@ -230,10 +149,24 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 - [Klipper](https://www.klipper3d.org/) community
 - [Moonraker](https://github.com/Arksine/moonraker) for the Klipper API
 
-## Support
 
-If you encounter issues:
-1. Check the serial output at 115200 baud
-2. Verify all connections
-3. Ensure WiFi network is 2.4GHz (ESP32-C3 doesn't support 5GHz)
-4. Check Klipper/Moonraker logs
+## Print the Mount
+
+The file for printing can be found in [`prints/`](prints/)
+The model is for the Enders with 40x40mm extrusion base, like the Ender 3 variants.
+
+The little clips slide into the profile of the extrusion:
+<div align="center">
+    <img src="images/Clips in Ext.png" alt="Clips" width="300">
+</div>
+
+It's easier to push the clips into the Mount first, then push the clips into the profile.
+<div align="center">
+    <img src="images/Clips in Mount.png" alt="Clips" width="300">
+</div>
+
+The cutout in the bottom of the housing for the USB cable to pass through is slightly offset.
+This was because the 2 particular displays I received were slightly off from where the screen graphics displayed and where the USB plugged in. Should you need a slightly different orientation please let me know and I'll add a variant.
+<div align="center">
+    <img src="images/Mount Cutout.png" alt="Clips" width="300">
+</div>
