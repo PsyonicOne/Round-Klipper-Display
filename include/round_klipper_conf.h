@@ -22,9 +22,9 @@
 #define MOONRAKER_API_KEY "30c54741364a44b693dee7cdefbe7178" // Your Moonraker API key (http://klipper.local/access/api_key should display your key)
 
 // WiFi credentials - CHANGE THESE TO SUIT YOUR WIFI NETWORK
-#define WIFI_SSID "cable2.linux.hom"
-#define WIFI_PASSWORD "rockycanoe969"
-#define HOST_NAME "ENDER3_PANEL"
+#define WIFI_SSID "Your_WiFi_SSID" // Your WiFi network name (SSID)
+#define WIFI_PASSWORD "Your_WiFi_Password" // Your WiFi network password
+#define HOST_NAME "Hostname" // Hostname for your device on the network (optional, but can be helpful for identifying it)
 
 // Button names and macros - these are the G-code macros that will be sent to Klipper when the buttons are pressed.
 // You can change these to match your macro names in Klipper.
