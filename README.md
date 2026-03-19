@@ -165,7 +165,12 @@ The little clips slide into the profile of the extrusion:
     <img src="images/Clips in Ext.png" alt="Clips" width="300">
 </div>
 
-
+<br/>
+&nbsp;<br/>
+<br/>
+&nbsp;<br/>
+<br/>
+&nbsp;<br/>
 It's easier to push the clips into the Mount first, then push the clips into the profile.
 Do not glue the clips in, you'll need to adjust them as you slide them into the profile.
 With all the tolerances they should be a bit of a friction fit and not require any glue.
