@@ -13,7 +13,7 @@ A custom round LCD touch panel for Klipper 3D printer firmware, built with a sup
 
 This project provides a very basic graphical touch interface for Klipper-based 3D printers using a round 240x240 LCD display.
 It connects to Moonraker (Klipper's API server) via WebSocket to display real-time printer status and temperatures.
-It has 3 configurable buttons for telling Klipper to run a macro.
+It has 3 configurable buttons for telling Klipper to run macros.
 
 ![Round Display](https://img.shields.io/badge/Display-240x240_round-blue)
 ![ESP32-C3](https://img.shields.io/badge/Device-ESP32--C3-green)
@@ -23,7 +23,7 @@ It has 3 configurable buttons for telling Klipper to run a macro.
 
 Like most Klipper uses of custom printers I run my printers 100% from my PC. The problem is when I have to preform a task that requires me to be physically standing at my printer.
 The 3 tasks that require me to be physically at the printer is Loading new filament, Unloading filament, and Resuming after a pause/colour change where I need to remove purged material.
-These 3 tasks required that I click a button on my PC, then get over to the printer in time to perform the task. Loading and unloading filament wasn't really an issue but Resuming a print could be a problem.
+These 3 tasks required that I click a button on my PC, then get over to the printer post haste in time to perform the task. Loading and unloading filament isn't really an issue but Resuming a print could sometimes be a problem.
 So I created this extremely simple, cheap and easy to use display.
 The 3 buttons can be customized with any name you want (assuming it fits on the button) and to send any macro name to Klipper you want run. This is all configurable from a single config file (round_klipper_conf.h)
 
