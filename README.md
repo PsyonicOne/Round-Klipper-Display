@@ -23,7 +23,10 @@ The 3 buttons can be customized with any name you want (assuming it fits) and to
 ## Hardware
 
 - **Device**: ESP32-2424S012C-I Round LCD Module from AliExpress
-https://www.aliexpress.com/item/1005010512426009.html ![Round Display](images/display.png)
+https://www.aliexpress.com/item/1005010512426009.html
+<div align="center">
+    <img src="images/display.png" alt="Round Display" width="300">
+</div>
 - **USB Cable**: Flat USB-C cable from Amazon
 This is the Australian one - https://www.amazon.com.au/dp/B0FPCMK1J1  ![USB-C Cable](images/USB_cable.png)
 
