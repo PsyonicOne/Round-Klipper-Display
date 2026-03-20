@@ -32,11 +32,14 @@ static uint32_t lastTempUpdate;
 static float hotendTemp;
 static float bedTemp;
 static String state;
+static String prevState = "";  // Track previous state for print start detection
 
 // Screen blanking state
 static bool screenBlanked = false;
 static bool touchWasActive = false;
+static bool screenJustWoke = false;  // True immediately after waking, prevents button triggers
 static uint32_t lastScreenStateCheck = 0;
+static uint32_t wakeCooldownEnd = 0;
 static uint32_t lastTouchWakeCheck = 0;
 
 // LVGL input device
@@ -98,16 +101,34 @@ extern "C"
 {
     void btnLeftClicked()
     {
+        // Ignore button clicks if screen just woke up (prevents accidental triggers)
+        if (screenJustWoke) {
+            Serial.println("Button ignored (just woke)");
+            return;
+        }
+        Serial.println("Right Button clicked");
         sendGcodeCommand(BOTTOM_RIGHT_BTN_MACRO);
     }
 
     void btnRightClicked()
     {
+        // Ignore button clicks if screen just woke up
+        if (screenJustWoke) {
+            Serial.println("Button ignored (just woke)");
+            return;
+        }
+        Serial.println("Left Button clicked");
         sendGcodeCommand(BOTTOM_LEFT_BTN_MACRO);
     }
 
     void btnTopClicked()
     {
+        // Ignore button clicks if screen just woke up
+        if (screenJustWoke) {
+            Serial.println("Button ignored (just woke)");
+            return;
+        }
+        Serial.println("Top Button clicked");
         sendGcodeCommand(RESUME_BTN_MACRO);
     }
 }
@@ -127,20 +148,20 @@ void MoonrakerEvent(WStype_t type, uint8_t* payload, size_t length) {
             MoonrakerWS.sendTXT("{\"jsonrpc\":\"2.0\",\"method\":\"printer.objects.query\",\"params\":{\"objects\":[\"print_stats\"]},\"id\":2}");
             break;
         case WStype_TEXT: {
-            Serial.printf("Moonraker: Received: %s\n", payload);
+            // Serial.printf("Moonraker: Received: %s\n", payload);
             
             // Parse temperatures from the message
             float temp = parseMoonrakerTemp((const char*)payload, "extruder");
             if (temp >= 0.0f) {
                 hotendTemp = temp;
-                Serial.printf("Hotend temp: %.1f\n", hotendTemp);
+                // Serial.printf("Hotend temp: %.1f\n", hotendTemp);
             }
             
             // Parse bed temperature
             temp = parseMoonrakerTemp((const char*)payload, "heater_bed");
             if (temp >= 0.0f) {
                 bedTemp = temp;
-                Serial.printf("Bed temp: %.1f\n", bedTemp);
+                // Serial.printf("Bed temp: %.1f\n", bedTemp);
             }
             
             // Parse print state - Moonraker sends print_stats like:
@@ -155,7 +176,7 @@ void MoonrakerEvent(WStype_t type, uint8_t* payload, size_t length) {
                     char* endPtr = strstr(statePtr, "\"");
                     if (endPtr) {
                         state = String(statePtr).substring(0, endPtr - statePtr);
-                        Serial.printf("Print state: %s\n", state.c_str());
+                        // Serial.printf("Print state: %s\n", state.c_str());
                     }
                 }
             }
@@ -173,6 +194,19 @@ void MoonrakerEvent(WStype_t type, uint8_t* payload, size_t length) {
 static void touch_read_cb(lv_indev_t* indev, lv_indev_data_t* data) {
     int x, y;
     if (touch.readTouch(x, y)) {
+        // If screen is blanked, wake it but don't pass touch to LVGL
+        // This prevents accidental button triggers when waking the screen
+        if (screenBlanked) {
+            tft.setBacklight(SCREEN_BACKLIGHT_ON);
+            screenBlanked = false;
+            screenJustWoke = true;
+            wakeCooldownEnd = millis() + 1000;  // 1 second cooldown
+            Serial.println("Screen woken up (touch)");
+            // Don't pass this touch to LVGL - prevents button trigger
+            data->state = LV_INDEV_STATE_RELEASED;
+            return;
+        }
+        
         data->point.x = x;
         data->point.y = y;
         data->state = LV_INDEV_STATE_PRESSED;
@@ -282,38 +316,43 @@ void setup() {
 
 void loop() {
     
-    // Update temperatures every 2 seconds (only if screen is not blanked)
-    if (millis() - lastTempUpdate > 2000) {
-        lastTempUpdate = millis();
+    // Combined screen management loop - runs every 500ms
+    if (millis() - lastScreenStateCheck > 500) {
+        lastScreenStateCheck = millis();
+            
+        // Debug: log state changes
+        if (prevState != state) {
+            Serial.printf("State changed: '%s' -> '%s'\n", prevState.c_str(), state.c_str());
+        }
         
-        // Only update UI when screen is not blanked
+        // Check if print just started - wake screen when printing begins
+        if (screenBlanked && state == "printing" && prevState != "printing") {
+            tft.setBacklight(SCREEN_BACKLIGHT_ON);
+            screenBlanked = false;
+            screenJustWoke = true;
+            wakeCooldownEnd = millis() + 1000;
+            Serial.println("Screen woken up (print started)");
+        }
+        
+        // Check if print just ended - reset activity timer to delay blanking
+        if (!screenBlanked && prevState == "printing" && state != "printing") {
+            lv_disp_trig_activity(lv_display_get_default());
+            Serial.println("Print ended - reset activity timer");
+        }
+        prevState = state;
+        
+        // Update UI if not blanked and time to update
         if (!screenBlanked) {
             ui_updateTemperatures(hotendTemp, bedTemp);
             ui_updateStatus(state);
         }
         
-        Serial.print("Updated: ");
-        Serial.print(hotendTemp);
-        Serial.print("° (hotend), ");
-        Serial.print(bedTemp);
-        Serial.print("° (bed), status: ");
-        Serial.println(state);
-    }
-
-    // Handle LVGL tasks
-    lv_tick_inc(1);
-    lv_timer_handler();
-    
-    // Screen blanking logic
-    // Check every 500ms to avoid excessive processing
-    if (millis() - lastScreenStateCheck > 500) {
-        lastScreenStateCheck = millis();
-        
+        // Screen blanking logic
         uint32_t inactiveTime = lv_disp_get_inactive_time(lv_display_get_default());
         uint32_t inactiveSeconds = inactiveTime / 1000; // Convert ms to seconds
         
         // Check if we should blank the screen
-        // Blank if: state is NOT "printing" AND inactive > BLANK_TIMEOUT
+        // Blank if: state is NOT "printing" AND inactive > BLREEN_TIMEOUT
         bool isPrinting = (state == "printing");
         
         if (!screenBlanked && !isPrinting && inactiveSeconds > SCREEN_BLANK_TIMEOUT_SECS) {
@@ -322,26 +361,22 @@ void loop() {
             screenBlanked = true;
             Serial.println("Screen blanked (inactive)");
         }
-        else if (screenBlanked) {
-            // Screen is blanked - check if touch should wake it
-            // Only wake on actual touch activity, not just UI updates
-            if (touchWasActive) {
-                // Reset touch flag
-                touchWasActive = false;
-                // Only wake if touch happened recently (within last second)
-                if (inactiveSeconds < 1) {
-                    tft.setBacklight(SCREEN_BACKLIGHT_ON);
-                    screenBlanked = false;
-                    Serial.println("Screen woken up (touch)");
-                }
-            }
-        }
     }
+
+    // Handle LVGL tasks
+    lv_tick_inc(1);
+    lv_timer_handler();
     
     // Reset touch flag after a delay to avoid stale touch events
     if (millis() - lastTouchWakeCheck > 2000) {
         lastTouchWakeCheck = millis();
         touchWasActive = false;
+    }
+    
+    // Check if wake cooldown has expired
+    if (screenJustWoke && millis() > wakeCooldownEnd) {
+        screenJustWoke = false;
+        Serial.println("Wake cooldown expired - buttons enabled");
     }
 
     // Handle Moonraker WebSocket

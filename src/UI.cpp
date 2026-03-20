@@ -61,22 +61,21 @@ float currentBedTemp = 0;
 #define arcRadius      120          // Radius of temperature arcs (half of arc size)
 
 // Button callbacks
-static void btn_load_cb(lv_event_t *event) {
+static void btn_load_cb(lv_event_t *event)
+{
     (void)event;
-    Serial.println("LOAD clicked");
     btnLeftClicked();
 }
 
 static void btn_unload_cb(lv_event_t *event)
 {
     (void)event;
-    Serial.println("UNLOAD clicked");
     btnRightClicked();
 }
 
-static void btn_resume_cb(lv_event_t *event) {
+static void btn_resume_cb(lv_event_t *event)
+{
     (void)event;
-    Serial.println("RESUME clicked");
     btnTopClicked();
 }
 
@@ -406,7 +405,6 @@ void ui_updateStatus(const String& status) {
         Serial.println("Stopping animations from error/cancelled status...");
         bool del1 = lv_anim_delete(statusArc, NULL);  // NULL deletes all animations on statusArc
         bool del2 = lv_anim_delete(separatorArc, NULL);  // NULL deletes all animations on separatorArc
-        Serial.print("Deleted animations: "); Serial.print(del1); Serial.print(", "); Serial.println(del2);
         // Reset arc sizes to default
         if (statusArc) lv_obj_set_size(statusArc, 216, 216);
         if (separatorArc) lv_obj_set_size(separatorArc, 262, 262);

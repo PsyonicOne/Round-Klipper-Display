@@ -61,6 +61,7 @@ This is the default pin configuration for the device I used, if you use a differ
 - **Real-time Temperature Display**: Shows hotend and bed temperatures in real time
 - **Print Status**: Displays current printer state as a coloured arc that changes colour depending on the printer state, while printing it animates slightly
 - **Touch Controls**: Three fully customizable buttons
+- **Screen Blanking**: Screen will shut off when not printing and not being used after a configurable timeout
 - **WebSocket Connection**: Direct communication with Moonraker API
 - **Custom UI**: Round-optimized interface using LVGL
 - **Custom Touch Driver**: I couldn't find a touch driver that worked so made my own
@@ -117,6 +118,27 @@ The default ones are from my configuration, you will need to make sure the macro
 #define BOTTOM_LEFT_BTN_MACRO "LOAD_FILAMENT"    // Macro to load filament
 #define BOTTOM_RIGHT_BTN_MACRO "UNLOAD_FILAMENT" // Macro to unload filament
 ```
+
+### 4. Configure Screen Blanking
+
+The display includes automatic screen blanking when not in use.
+
+In [`include/round_klipper_conf.h`](include/round_klipper_conf.h):
+
+```cpp
+// Screen blanking settings
+#define SCREEN_BLANK_TIMEOUT_SECS 30    // Seconds of inactivity before blanking
+#define SCREEN_BACKLIGHT_ON 100         // Backlight brightness when active (0-255)
+#define SCREEN_BACKLIGHT_OFF 0          // Backlight brightness when blanked (0-255)
+```
+
+### Behavior
+
+- **Blanking**: Screen blanks after inactivity when NOT printing
+- **During Print**: Screen stays on regardless of inactivity
+- **Print Start**: Screen automatically wakes when print begins
+- **Print End**: After print ends, the screen will wait before blanking
+- **Wake on Touch**: First touch wakes the screen (buttons disabled for 1 second to prevent accidental triggers)
 
 ### 4. Build and Upload
 
