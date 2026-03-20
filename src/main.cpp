@@ -41,6 +41,7 @@ static bool screenJustWoke = false;  // True immediately after waking, prevents 
 static uint32_t lastScreenStateCheck = 0;
 static uint32_t wakeCooldownEnd = 0;
 static uint32_t lastTouchWakeCheck = 0;
+static bool connectionFailed = false;  // Track if connection has failed
 
 // LVGL input device
 static lv_indev_t *indev_touch = nullptr;
@@ -138,9 +139,15 @@ void MoonrakerEvent(WStype_t type, uint8_t* payload, size_t length) {
     switch(type) {
         case WStype_DISCONNECTED:
             Serial.println("Moonraker: Disconnected");
+            // Show connecting status when disconnected
+            ui_setConnecting();
+            connectionFailed = true;  // Prevent blanking during reconnection
             break;
         case WStype_CONNECTED:
             Serial.println("Moonraker: Connected");
+            // Set UI to connected state (green)
+            ui_setConnected();
+            connectionFailed = false;  // Reset failed state on successful connection
             // Subscribe to printer objects
             MoonrakerWS.sendTXT("{\"jsonrpc\":\"2.0\",\"method\":\"printer.objects.subscribe\",\"params\":{\"objects\":{\"extruder\":null,\"heater_bed\":null,\"print_stats\":null,\"toolhead\":null}},\"id\":1}");
             
@@ -184,6 +191,9 @@ void MoonrakerEvent(WStype_t type, uint8_t* payload, size_t length) {
         }
         case WStype_ERROR:
             Serial.println("Moonraker: Error");
+            // Show connection failed on error
+            ui_setConnectionFailed();
+            connectionFailed = true;
             break;
         default:
             break;
@@ -262,8 +272,19 @@ void setup() {
     lv_indev_set_type(indev_touch, LV_INDEV_TYPE_POINTER);
     lv_indev_set_read_cb(indev_touch, touch_read_cb);
     Serial.println("LVGL touch input device created");
-    
+
+    // Create UI
+    ui_createMainScreen();
+
+    // Invalidate the entire screen to trigger initial render
+    lv_obj_invalidate(lv_screen_active());
+    lv_tick_inc(1);
+    lv_timer_handler();
+
     Serial.println("Ready!");
+    
+    // Start connection sequence - show connecting status
+    ui_setConnecting();
     
     // WiFi disabled for testing
     WiFi.setSleep(false);
@@ -274,7 +295,9 @@ void setup() {
     
     int wifiAttempts = 0;
     while (WiFi.status() != WL_CONNECTED && wifiAttempts < 30) {
-        delay(500);
+        delay(100);
+        lv_tick_inc(100);
+        lv_timer_handler();
         Serial.print(".");
         wifiAttempts++;
     }
@@ -298,13 +321,9 @@ void setup() {
         Serial.println("Moonraker WebSocket initializing...");
     } else {
         Serial.println(" WiFi failed");
+        ui_setConnectionFailed();
+        connectionFailed = true;
     }
-    
-    // Create UI
-    ui_createMainScreen();
-
-    // Invalidate the entire screen to trigger initial render
-    lv_obj_invalidate(lv_screen_active());
 
     lastTempUpdate = millis();
     hotendTemp = 0.0;
@@ -352,10 +371,10 @@ void loop() {
         uint32_t inactiveSeconds = inactiveTime / 1000; // Convert ms to seconds
         
         // Check if we should blank the screen
-        // Blank if: state is NOT "printing" AND inactive > BLREEN_TIMEOUT
+        // Blank if: state is NOT "printing" AND inactive > BLANK_TIMEOUT AND not disconnected
         bool isPrinting = (state == "printing");
         
-        if (!screenBlanked && !isPrinting && inactiveSeconds > SCREEN_BLANK_TIMEOUT_SECS) {
+        if (!screenBlanked && !isPrinting && !connectionFailed && inactiveSeconds > SCREEN_BLANK_TIMEOUT_SECS) {
             // Blank the screen
             tft.setBacklight(SCREEN_BACKLIGHT_OFF);
             screenBlanked = true;

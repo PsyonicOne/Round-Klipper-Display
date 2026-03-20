@@ -414,3 +414,75 @@ void ui_updateStatus(const String& status) {
         baseColor = COLOR_CYAN;
     }
 }
+
+// Animation callback for flashing red during connection
+static bool connectFlashOn = true;
+static lv_anim_t connectAnim;
+
+static void anim_connect_flash_cb(void* var, int32_t v) {
+    lv_obj_t* arc = (lv_obj_t*)var;
+    if (arc) {
+        // Toggle between red and dark red (dim)
+        if (connectFlashOn) {
+            lv_obj_set_style_arc_color(arc, lv_color_hex(0xFF0000), 0);  // Bright red
+        } else {
+            lv_obj_set_style_arc_color(arc, lv_color_hex(0x330000), 0);  // Dim red
+        }
+        connectFlashOn = !connectFlashOn;
+    }
+}
+
+void ui_setConnecting() {
+    if (!statusArc) return;
+    
+    // Stop any existing animations
+    lv_anim_delete(statusArc, NULL);
+    
+    // Initialize flashing animation - 200ms interval
+    connectFlashOn = true;
+    lv_anim_init(&connectAnim);
+    lv_anim_set_var(&connectAnim, statusArc);
+    lv_anim_set_values(&connectAnim, 0, 1);
+    lv_anim_set_time(&connectAnim, 200);  // 200ms per flash
+    lv_anim_set_path_cb(&connectAnim, lv_anim_path_linear);
+    lv_anim_set_exec_cb(&connectAnim, anim_connect_flash_cb);
+    lv_anim_set_repeat_count(&connectAnim, LV_ANIM_REPEAT_INFINITE);
+    lv_anim_start(&connectAnim);
+    
+    Serial.println("UI: Connecting - flashing red");
+}
+
+void ui_setConnected() {
+    if (!statusArc) return;
+    
+    // Stop flashing animation
+    lv_anim_delete(statusArc, NULL);
+    
+    // Set to green (idle state)
+    lv_obj_set_style_arc_color(statusArc, lv_color_hex(0x00FF00), 0);
+    
+    // Reset arc size
+    lv_obj_set_size(statusArc, 216, 216);
+    
+    Serial.println("UI: Connected - green");
+}
+
+void ui_setConnectionFailed() {
+    if (!statusArc) return;
+    
+    // Stop any existing animations
+    lv_anim_delete(statusArc, NULL);
+    
+    // Start flashing red animation (keep flashing)
+    connectFlashOn = true;
+    lv_anim_init(&connectAnim);
+    lv_anim_set_var(&connectAnim, statusArc);
+    lv_anim_set_values(&connectAnim, 0, 1);
+    lv_anim_set_time(&connectAnim, 200);  // 200ms per flash
+    lv_anim_set_path_cb(&connectAnim, lv_anim_path_linear);
+    lv_anim_set_exec_cb(&connectAnim, anim_connect_flash_cb);
+    lv_anim_set_repeat_count(&connectAnim, LV_ANIM_REPEAT_INFINITE);
+    lv_anim_start(&connectAnim);
+    
+    Serial.println("UI: Connection failed - flashing red");
+}

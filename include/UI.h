@@ -18,6 +18,11 @@ void ui_createSettingsScreen();
 void ui_updateTemperatures(float hotend, float bed);
 void ui_updateStatus(const String& status);
 
+// Connection status functions
+void ui_setConnecting();
+void ui_setConnected();
+void ui_setConnectionFailed();
+
 // Button action functions (implemented in main.cpp)
 extern "C" {
     void btnLeftClicked();
