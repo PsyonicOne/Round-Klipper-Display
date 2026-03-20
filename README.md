@@ -11,7 +11,7 @@ A custom round LCD touch panel for Klipper 3D printer firmware, built with a sup
 
 ## Overview
 
-This project provides a very basic graphical touch interface for Klipper-based 3D printers using a round 240x240 LCD display.
+This project provides a very basic graphical touch interface for Klipper-based 3D printers using a cheap round 240x240 LCD display.
 It connects to Moonraker (Klipper's API server) via WebSocket to display real-time printer status and temperatures.
 It has 3 configurable buttons for telling Klipper to run macros.
 
@@ -127,7 +127,7 @@ In [`include/round_klipper_conf.h`](include/round_klipper_conf.h):
 
 ```cpp
 // Screen blanking settings
-#define SCREEN_BLANK_TIMEOUT_SECS 30    // Seconds of inactivity before blanking
+#define SCREEN_BLANK_TIMEOUT_SECS 120   // Seconds of inactivity before blanking
 #define SCREEN_BACKLIGHT_ON 100         // Backlight brightness when active (0-255)
 #define SCREEN_BACKLIGHT_OFF 0          // Backlight brightness when blanked (0-255)
 ```
