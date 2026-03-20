@@ -140,7 +140,7 @@ In [`include/round_klipper_conf.h`](include/round_klipper_conf.h):
 - **Print End**: After print ends, the screen will wait before blanking
 - **Wake on Touch**: First touch wakes the screen (buttons disabled for 1 second to prevent accidental triggers)
 
-### 4. Build and Upload
+## Build and Upload
 
 You are better off using the PlatformIO buttons in VSCode, but if you're more comfortable with the CLI:
 
