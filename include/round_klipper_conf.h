@@ -19,11 +19,11 @@
 // Moonraker connection settings
 #define MOONRAKER_HOST "klipper.local" // Your Klipper Hostname or IP address (klipper.local should work if set up correctly on your network)
 #define MOONRAKER_PORT 7125  // Default Moonraker port
-#define MOONRAKER_API_KEY "30c54741364a44b693dee7cdefbe7178" // Your Moonraker API key (http://klipper.local/access/api_key should display your key)
+#define MOONRAKER_API_KEY "your_api_key_here" // Your Moonraker API key (http://klipper.local/access/api_key should display your key)
 
 // WiFi credentials - CHANGE THESE TO SUIT YOUR WIFI NETWORK
-#define WIFI_SSID "Your_WiFi_SSID" // Your WiFi network name (SSID)
-#define WIFI_PASSWORD "Your_WiFi_Password" // Your WiFi network password
+#define WIFI_SSID "your_wifi_ssid" // Your WiFi network name (SSID)
+#define WIFI_PASSWORD "your_wifi_password" // Your WiFi network password
 #define HOST_NAME "Hostname" // Hostname for your device on the network (optional, but can be helpful for identifying it)
 
 // Button names and macros - these are the G-code macros that will be sent to Klipper when the buttons are pressed.
@@ -37,6 +37,5 @@
 
 // Screen blanking settings
 #define SCREEN_BLANK_TIMEOUT_SECS 120 // Screen will go blank when: state is NOT "printing" AND inactive for this many seconds
-#define SCREEN_WAKE_TIMEOUT_SECS 10 // Screen will wake up when inactive for less than this many seconds
 #define SCREEN_BACKLIGHT_ON 100 // Backlight brightness level when screen is active (0-255)
 #define SCREEN_BACKLIGHT_OFF 0 // Backlight brightness level when screen is blanked (0-255, set to 0 for complete off)
