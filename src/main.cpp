@@ -212,6 +212,7 @@ static void touch_read_cb(lv_indev_t* indev, lv_indev_data_t* data) {
             screenJustWoke = true;
             wakeCooldownEnd = millis() + 1000;  // 1 second cooldown
             Serial.println("Screen woken up (touch)");
+            lv_disp_trig_activity(lv_display_get_default()); // Reset activity timer to prevent immediate re-blanking
             // Don't pass this touch to LVGL - prevents button trigger
             data->state = LV_INDEV_STATE_RELEASED;
             return;

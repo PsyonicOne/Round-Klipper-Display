@@ -378,7 +378,7 @@ void ui_updateStatus(const String& status) {
         // Change statusArc color to green
         if (statusArc) lv_obj_set_style_arc_color(statusArc, lv_color_hex(0x00FF00), 0);
         // Stop animations when complete/standby - pass NULL to delete all animations
-        Serial.println("Stopping animations from complete/standby status...");
+        // Serial.println("Stopping animations from complete/standby status...");
         lv_anim_delete(statusArc, NULL);
         lv_anim_delete(separatorArc, NULL);
         currentPrintStatus = status;
@@ -402,7 +402,7 @@ void ui_updateStatus(const String& status) {
         // Change statusArc color to red
         if (statusArc) lv_obj_set_style_arc_color(statusArc, lv_color_hex(0xFF0000), 0);
         // Stop animations when error/cancelled - pass NULL to delete ALL animations on the arc objects
-        Serial.println("Stopping animations from error/cancelled status...");
+        // Serial.println("Stopping animations from error/cancelled status...");
         bool del1 = lv_anim_delete(statusArc, NULL);  // NULL deletes all animations on statusArc
         bool del2 = lv_anim_delete(separatorArc, NULL);  // NULL deletes all animations on separatorArc
         // Reset arc sizes to default
@@ -449,7 +449,7 @@ void ui_setConnecting() {
     lv_anim_set_repeat_count(&connectAnim, LV_ANIM_REPEAT_INFINITE);
     lv_anim_start(&connectAnim);
     
-    Serial.println("UI: Connecting - flashing red");
+    Serial.print("Connecting...");
 }
 
 void ui_setConnected() {
@@ -463,8 +463,6 @@ void ui_setConnected() {
     
     // Reset arc size
     lv_obj_set_size(statusArc, 216, 216);
-    
-    Serial.println("UI: Connected - green");
 }
 
 void ui_setConnectionFailed() {
@@ -484,5 +482,5 @@ void ui_setConnectionFailed() {
     lv_anim_set_repeat_count(&connectAnim, LV_ANIM_REPEAT_INFINITE);
     lv_anim_start(&connectAnim);
     
-    Serial.println("UI: Connection failed - flashing red");
+    Serial.println("Connection failed!");
 }
