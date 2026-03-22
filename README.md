@@ -21,7 +21,7 @@ It has 3 configurable buttons for telling Klipper to run macros.
 
 ## Purpose
 
-Like most Klipper uses of custom printers I run my printers 100% from my PC. The problem is when I have to preform a task that requires me to be physically standing at my printer.
+Like most Klipper uses of custom printers I run my printers 100% from my PC. The problem is when I have to perform a task that requires me to be physically standing at my printer.
 The 3 tasks that require me to be physically at the printer is Loading new filament, Unloading filament, and Resuming after a pause/colour change where I need to remove purged material.
 These 3 tasks required that I click a button on my PC, then get over to the printer post haste in time to perform the task. Loading and unloading filament isn't really an issue but Resuming a print could sometimes be a problem.
 So I created this extremely simple, cheap and easy to use display.
