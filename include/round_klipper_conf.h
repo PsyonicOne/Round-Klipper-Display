@@ -22,18 +22,18 @@
 #define MOONRAKER_API_KEY "your_api_key_here" // Your Moonraker API key (http://klipper.local/access/api_key should display your key)
 
 // WiFi credentials - CHANGE THESE TO SUIT YOUR WIFI NETWORK
-#define WIFI_SSID "your_wifi_ssid" // Your WiFi network name (SSID)
-#define WIFI_PASSWORD "your_wifi_password" // Your WiFi network password
-#define HOST_NAME "Hostname" // Hostname for your device on the network (optional, but can be helpful for identifying it)
+#define WIFI_SSID "your_ssid_here" // Your WiFi network name (SSID)
+#define WIFI_PASSWORD "your_password_here" // Your WiFi network password
+#define HOST_NAME "your_host_name_here" // Hostname for your device on the network (optional, but can be helpful for identifying it)
 
 // Button names and macros - these are the G-code macros that will be sent to Klipper when the buttons are pressed.
 // You can change these to match your macro names in Klipper.
-#define RESUME_BTN_NAME "RESUME" // Word displayed on top button (curved at top so will look wrong if modified to something other than 6 characters)
-#define RESUME_BTN_MACRO "RESUME" // Macro name to execute when top button is pressed
-#define BOTTOM_LEFT_BTN_NAME "LOAD" // Word displayed on bottom left button
-#define BOTTOM_LEFT_BTN_MACRO "LOAD_FILAMENT" // Macro name to execute when bottom left button is pressed
-#define BOTTOM_RIGHT_BTN_NAME "UNLOAD" // Word displayed on bottom right button
-#define BOTTOM_RIGHT_BTN_MACRO "UNLOAD_FILAMENT" // Macro name to execute when bottom right button is pressed
+#define TOP_BTN_NAME "RESUME" // Word displayed on top button (curved at top so will look wrong if modified to something other than 6 characters)
+#define TOP_BTN_MACRO "RESUME" // Macro name to execute when top button is pressed
+#define BOTTOM_LEFT_BTN_NAME "LOAD" // Word displayed on left button
+#define BOTTOM_LEFT_BTN_MACRO "LOAD_FILAMENT" // Macro name to execute when left button is pressed
+#define BOTTOM_RIGHT_BTN_NAME "UNLOAD" // Word displayed on right button
+#define BOTTOM_RIGHT_BTN_MACRO "UNLOAD_FILAMENT" // Macro name to execute when right button is pressed
 
 // Screen blanking settings
 #define SCREEN_BLANK_TIMEOUT_SECS 120 // Screen will go blank when: state is NOT "printing" AND inactive for this many seconds

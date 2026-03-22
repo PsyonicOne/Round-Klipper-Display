@@ -199,8 +199,8 @@ The little clips slide into the profile of the extrusion.
 
 <br/>
 &nbsp;<br/>
-It's easier to push the clips into the Mount first, then push the clips into the profile.
-Do not glue the clips in, you'll need to adjust them as you slide them into the profile.
+It's easier to push the clips into the extrusion first, then gently push the clips into the display housing one-by-one.
+Do not glue the clips in, you'll need to adjust them as you slide them around.
 With all the tolerances everything should have a bit of a friction fit and not require any glue.
 <div align="center">
     <img src="images/Clips in Mount.png" alt="Clips" width="300">

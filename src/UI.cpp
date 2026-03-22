@@ -61,19 +61,19 @@ float currentBedTemp = 0;
 #define arcRadius      120          // Radius of temperature arcs (half of arc size)
 
 // Button callbacks
-static void btn_load_cb(lv_event_t *event)
+static void btn_left_cb(lv_event_t *event)
 {
     (void)event;
     btnLeftClicked();
 }
 
-static void btn_unload_cb(lv_event_t *event)
+static void btn_right_cb(lv_event_t *event)
 {
     (void)event;
     btnRightClicked();
 }
 
-static void btn_resume_cb(lv_event_t *event)
+static void btn_top_cb(lv_event_t *event)
 {
     (void)event;
     btnTopClicked();
@@ -152,50 +152,50 @@ void ui_createMainScreen() {
 
 
     // Top button (Resume) - positioned at top-centre
-    lv_obj_t *resumeBtn = lv_btn_create(mainScreen);
-    lv_obj_set_size(resumeBtn, 240, 105);
-    lv_obj_set_pos(resumeBtn, 0, 0);
-    lv_obj_add_event_cb(resumeBtn, btn_resume_cb, LV_EVENT_CLICKED, NULL);
-    lv_obj_set_style_bg_color(resumeBtn, lv_color_hex(COLOR_RESUME), 0);
-    lv_obj_set_style_bg_opa(resumeBtn, LV_OPA_COVER, 0);
-    lv_obj_remove_flag(resumeBtn, LV_OBJ_FLAG_SCROLLABLE);
+    lv_obj_t *topBtn = lv_btn_create(mainScreen);
+    lv_obj_set_size(topBtn, 240, 105);
+    lv_obj_set_pos(topBtn, 0, 0);
+    lv_obj_add_event_cb(topBtn, btn_top_cb, LV_EVENT_CLICKED, NULL);
+    lv_obj_set_style_bg_color(topBtn, lv_color_hex(COLOR_RESUME), 0);
+    lv_obj_set_style_bg_opa(topBtn, LV_OPA_COVER, 0);
+    lv_obj_remove_flag(topBtn, LV_OBJ_FLAG_SCROLLABLE);
 
     // === LOAD/UNLOAD BUTTONS ===
     // Left button
-    lv_obj_t* loadBtn = lv_btn_create(mainScreen);
-    lv_obj_set_size(loadBtn, 118, 60);
-    lv_obj_set_pos(loadBtn, 0, 110);
-    lv_obj_add_event_cb(loadBtn, btn_load_cb, LV_EVENT_CLICKED, NULL);
-    lv_obj_set_style_bg_color(loadBtn, lv_color_hex(COLOR_LOAD), 0);
-    lv_obj_set_style_bg_opa(loadBtn, LV_OPA_COVER, 0);
-    lv_obj_remove_flag(loadBtn, LV_OBJ_FLAG_SCROLLABLE);
+    lv_obj_t* leftBtn = lv_btn_create(mainScreen);
+    lv_obj_set_size(leftBtn, 118, 60);
+    lv_obj_set_pos(leftBtn, 0, 110);
+    lv_obj_add_event_cb(leftBtn, btn_left_cb, LV_EVENT_CLICKED, NULL);
+    lv_obj_set_style_bg_color(leftBtn, lv_color_hex(COLOR_LOAD), 0);
+    lv_obj_set_style_bg_opa(leftBtn, LV_OPA_COVER, 0);
+    lv_obj_remove_flag(leftBtn, LV_OBJ_FLAG_SCROLLABLE);
 
     // Add label to left button
-    lv_obj_t *loadLabel = lv_label_create(loadBtn);
-    lv_obj_set_style_text_align(loadLabel, LV_TEXT_ALIGN_RIGHT, 0);
-    lv_label_set_text(loadLabel, BOTTOM_LEFT_BTN_NAME);
-    lv_obj_center(loadLabel);
-    lv_obj_set_style_text_color(loadLabel, lv_color_hex(0x000000), 0);
-    lv_obj_set_style_text_font(loadLabel, &lv_font_montserrat_14, 0);
-    lv_obj_align(loadLabel, LV_ALIGN_BOTTOM_RIGHT, 5, 5);
+    lv_obj_t *leftLabel = lv_label_create(leftBtn);
+    lv_obj_set_style_text_align(leftLabel, LV_TEXT_ALIGN_RIGHT, 0);
+    lv_label_set_text(leftLabel, BOTTOM_LEFT_BTN_NAME);
+    lv_obj_center(leftLabel);
+    lv_obj_set_style_text_color(leftLabel, lv_color_hex(0x000000), 0);
+    lv_obj_set_style_text_font(leftLabel, &lv_font_montserrat_14, 0);
+    lv_obj_align(leftLabel, LV_ALIGN_BOTTOM_RIGHT, 5, 5);
 
     // Right button
-    lv_obj_t* unloadBtn = lv_btn_create(mainScreen);
-    lv_obj_set_size(unloadBtn, 118, 60);
-    lv_obj_set_pos(unloadBtn, 122, 110);
-    lv_obj_add_event_cb(unloadBtn, btn_unload_cb, LV_EVENT_CLICKED, NULL);
-    lv_obj_set_style_bg_color(unloadBtn, lv_color_hex(COLOR_UNLOAD), 0);
-    lv_obj_set_style_bg_opa(unloadBtn, LV_OPA_COVER, 0);
-    lv_obj_remove_flag(unloadBtn, LV_OBJ_FLAG_SCROLLABLE);
+    lv_obj_t* rightBtn = lv_btn_create(mainScreen);
+    lv_obj_set_size(rightBtn, 118, 60);
+    lv_obj_set_pos(rightBtn, 122, 110);
+    lv_obj_add_event_cb(rightBtn, btn_right_cb, LV_EVENT_CLICKED, NULL);
+    lv_obj_set_style_bg_color(rightBtn, lv_color_hex(COLOR_UNLOAD), 0);
+    lv_obj_set_style_bg_opa(rightBtn, LV_OPA_COVER, 0);
+    lv_obj_remove_flag(rightBtn, LV_OBJ_FLAG_SCROLLABLE);
 
     // Add label to right button
-    lv_obj_t *unloadLabel = lv_label_create(unloadBtn);
-    lv_obj_set_style_text_align(unloadLabel, LV_TEXT_ALIGN_LEFT, 0);
-    lv_label_set_text(unloadLabel, BOTTOM_RIGHT_BTN_NAME);
-    lv_obj_center(unloadLabel);
-    lv_obj_set_style_text_color(unloadLabel, lv_color_hex(0x000000), 0);
-    lv_obj_set_style_text_font(unloadLabel, &lv_font_montserrat_14, 0);
-    lv_obj_align(unloadLabel, LV_ALIGN_BOTTOM_LEFT, -5, 5);
+    lv_obj_t *rightLabel = lv_label_create(rightBtn);
+    lv_obj_set_style_text_align(rightLabel, LV_TEXT_ALIGN_LEFT, 0);
+    lv_label_set_text(rightLabel, BOTTOM_RIGHT_BTN_NAME);
+    lv_obj_center(rightLabel);
+    lv_obj_set_style_text_color(rightLabel, lv_color_hex(0x000000), 0);
+    lv_obj_set_style_text_font(rightLabel, &lv_font_montserrat_14, 0);
+    lv_obj_align(rightLabel, LV_ALIGN_BOTTOM_LEFT, -5, 5);
 
     // === BLACK SEPARATOR ARC ===
     const int separatorArcDiameter = 262;
@@ -321,7 +321,7 @@ void ui_createMainScreen() {
     CurvedText textCurved[] = {
         {"LOOT", 118, 7},
         {"DEB", 47, 7},
-        {RESUME_BTN_NAME, 216, 20},
+        {TOP_BTN_NAME, 216, 20},
     };
 
     for (int b = 0; b < 3; b++)
@@ -334,7 +334,7 @@ void ui_createMainScreen() {
         {
             int angle = textCurved[b].startAngle + (i * textCurved[b].angleStep);
             float angleRad = (angle * PI) / 180.0f;
-            if (textCurved[b].text == RESUME_BTN_NAME) // Special case for RESUME_BTN_NAME to position it at the top
+            if (textCurved[b].text == TOP_BTN_NAME) // Special case for RESUME_BTN_NAME to position it at the top
             {
                 x = centerX + (int)(resumeRadius * cosf(angleRad));
                 y = centerY + (int)(resumeRadius * sinf(angleRad));
@@ -349,7 +349,7 @@ void ui_createMainScreen() {
             lv_obj_set_pos(lbl, x, y);
             lv_obj_set_style_text_color(lbl, lv_color_hex(COLOR_CYAN), 0);
             // Rotate to follow curve: angle - 90 makes text perpendicular to radius
-            if (textCurved[b].text == RESUME_BTN_NAME) // Special case for RESUME_BTN_NAME to position it at the top
+            if (textCurved[b].text == TOP_BTN_NAME) // Special case for RESUME_BTN_NAME to position it at the top
             {
                 lv_obj_set_style_text_font(lbl, &lv_font_montserrat_28, 0);
                 lv_obj_set_style_text_color(lbl, lv_color_hex(COLOR_RESUME_TEXT), 0);

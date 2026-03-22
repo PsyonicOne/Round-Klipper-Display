@@ -100,7 +100,7 @@ void sendGcodeCommand(const char *gcode)
 // Button action functions (called from UI)
 extern "C"
 {
-    void btnLeftClicked()
+    void btnRightClicked()
     {
         // Ignore button clicks if screen just woke up (prevents accidental triggers)
         if (screenJustWoke) {
@@ -111,7 +111,7 @@ extern "C"
         sendGcodeCommand(BOTTOM_RIGHT_BTN_MACRO);
     }
 
-    void btnRightClicked()
+    void btnLeftClicked()
     {
         // Ignore button clicks if screen just woke up
         if (screenJustWoke) {
@@ -130,7 +130,7 @@ extern "C"
             return;
         }
         Serial.println("Top Button clicked");
-        sendGcodeCommand(RESUME_BTN_MACRO);
+        sendGcodeCommand(TOP_BTN_MACRO);
     }
 }
 
