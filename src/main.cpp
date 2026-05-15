@@ -12,11 +12,15 @@
 #include <CTouch.h>
 #include <WiFiClientSecure.h>
 #include <WebSocketsClient.h>
+#include <HTTPClient.h>
 #include <UI.h>
 #include <round_klipper_conf.h>
 
 #include <WiFi.h>
 #include <esp_task_wdt.h>
+
+// General settings
+unsigned long lastWifiCheck = 0; // Declare and initialize lastWifiCheck
 
 // Display object
 GC9A01 tft(LCD_SCK, LCD_MOSI, LCD_CS, LCD_DC, LCD_RST);
@@ -41,7 +45,10 @@ static bool screenJustWoke = false; // True immediately after waking, prevents b
 static uint32_t lastScreenStateCheck = 0;
 static uint32_t wakeCooldownEnd = 0;
 static uint32_t lastTouchWakeCheck = 0;
+
+// Connection tracking
 static bool connectionFailed = false; // Track if connection has failed
+static bool moonrakerWSStarted = false; // Track if Moonraker WS is initialized
 
 // LVGL input device
 static lv_indev_t *indev_touch = nullptr;
@@ -304,60 +311,102 @@ void setup()
     // Start connection sequence - show connecting status
     ui_setConnecting();
 
-    // WiFi disabled for testing
+    // WiFi setup
     WiFi.setSleep(false);
     WiFi.setTxPower(WIFI_POWER_17dBm);
     WiFi.mode(WIFI_STA);
+
+    // Do not block here: connections are handled in loop() every second.
+    WiFi.disconnect(true);
     delay(100);
-    WiFi.begin(WIFI_SSID, WIFI_PASSWORD);
-
-    int wifiAttempts = 0;
-    while (WiFi.status() != WL_CONNECTED && wifiAttempts < 30)
-    {
-        delay(100);
-        lv_tick_inc(100);
-        lv_timer_handler();
-        Serial.print(".");
-        wifiAttempts++;
-    }
-    if (WiFi.status() == WL_CONNECTED)
-    {
-        Serial.println("");
-        Serial.print("WiFi: ");
-        Serial.println(WiFi.localIP());
-
-        // Initialize Moonraker WebSocket
-        MoonrakerWS.begin(MOONRAKER_HOST, MOONRAKER_PORT, "/websocket");
-        MoonrakerWS.onEvent(MoonrakerEvent);
-        MoonrakerWS.setReconnectInterval(5000);
-
-// Add API key header if configured
-#ifdef MOONRAKER_API_KEY
-        if (strlen(MOONRAKER_API_KEY) > 0)
-        {
-            MoonrakerWS.setExtraHeaders("X-API-Key: " MOONRAKER_API_KEY);
-        }
-#endif
-
-        Serial.println("Moonraker WebSocket initializing...");
-    }
-    else
-    {
-        Serial.println(" WiFi failed");
-        ui_setConnectionFailed();
-        connectionFailed = true;
-    }
 
     lastTempUpdate = millis();
     hotendTemp = 0.0;
     bedTemp = 0.0;
     state = "unknown";
-    // lv_anim_delete(&animStatus);
-    // lv_anim_delete(&animSeparator);
+
+    // Ensure we start from a known disconnected state
+    connectionFailed = true;
+
 }
 
 void loop()
 {
+    // Handle Moonraker WebSocket state machine
+    MoonrakerWS.loop();
+
+    // --- Connection management (run once per second) ---
+    static uint32_t lastConnCheck = 0;
+    if (millis() - lastConnCheck > 1000)
+    {
+        lastConnCheck = millis();
+        int wifiStatus = WiFi.status();
+        bool wifiConnected = (wifiStatus == WL_CONNECTED);
+        bool moonrakerConnected = MoonrakerWS.isConnected();
+
+        if (!wifiConnected)
+        {
+            Serial.printf("WiFi: Not connected (Status: %d). Waiting...\n", wifiStatus);
+            ui_setConnecting();
+            connectionFailed = true;
+            moonrakerWSStarted = false; // Reset Moonraker state
+            
+            // Trigger begin only if we are truly disconnected, not while handshaking (0: WL_IDLE_STATUS)
+            if (wifiStatus != WL_IDLE_STATUS) {
+                Serial.println("WiFi: Initializing connection...");
+                WiFi.begin(WIFI_SSID, WIFI_PASSWORD);
+            }
+        }
+        else
+        {
+            // WiFi up: connect/reconnect Moonraker websocket if needed
+            bool authCheckPassed = true;
+            if (!moonrakerConnected && !moonrakerWSStarted)
+            {
+                // Optional: Verify API key via HTTP before starting WebSocket
+                HTTPClient http;
+                String url = "http://" + String(MOONRAKER_HOST) + ":" + String(MOONRAKER_PORT) + "/printer/info";
+                Serial.println("\nVerifying Moonraker API key at " + url + "...");
+                http.begin(url);
+                http.addHeader("X-API-Key", MOONRAKER_API_KEY);
+                http.setTimeout(2000);
+
+                int httpCode = http.GET();
+                Serial.printf("Moonraker API Auth Check: HTTP %d\n", httpCode);
+
+                if (httpCode == HTTP_CODE_UNAUTHORIZED || httpCode == HTTP_CODE_FORBIDDEN)
+                {
+                    Serial.println("Moonraker: AUTH ERROR - Invalid API Key!");
+                    Serial.printf("HTTP Code: %d. Check your round_klipper_conf.h\n", httpCode);
+                    ui_setConnectionFailed();
+                    connectionFailed = true;
+                    authCheckPassed = false;
+                    http.end();
+                }
+                else if (httpCode < 0)
+                {
+                    Serial.printf("Moonraker: Connection test failed: %s\n", http.errorToString(httpCode).c_str());
+                }
+                
+                http.end();
+
+                if (authCheckPassed)
+                {
+                    // Proceed with WebSocket connection
+                    ui_setConnecting();
+                    connectionFailed = true;
+
+                    MoonrakerWS.begin(MOONRAKER_HOST, MOONRAKER_PORT, "/websocket");
+                    MoonrakerWS.onEvent(MoonrakerEvent);
+                    MoonrakerWS.setReconnectInterval(5000);
+                    moonrakerWSStarted = true;
+
+                    MoonrakerWS.setExtraHeaders("X-API-Key: " MOONRAKER_API_KEY);
+                    Serial.println("Moonraker WebSocket initializing...");
+                }
+            }
+        }
+    }
 
     // Combined screen management loop - runs every 500ms
     if (millis() - lastScreenStateCheck > 500)
@@ -413,7 +462,11 @@ void loop()
     }
 
     // Handle LVGL tasks
-    lv_tick_inc(1);
+    // lv_tick_inc(1);
+    static uint32_t last_tick = 0;
+    uint32_t now = millis();
+    lv_tick_inc(now - last_tick);
+    last_tick = now;
     lv_timer_handler();
 
     // Reset touch flag after a delay to avoid stale touch events
@@ -429,9 +482,6 @@ void loop()
         screenJustWoke = false;
         Serial.println("Wake cooldown expired - buttons enabled");
     }
-
-    // Handle Moonraker WebSocket
-    MoonrakerWS.loop();
 
     // feed the dog
     esp_task_wdt_reset();

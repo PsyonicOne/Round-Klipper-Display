@@ -112,6 +112,8 @@ static void anim_status_cb(void *var, int32_t v)
 
 // Update temperature display
 void ui_updateTemperatures(float hotend, float bed) {
+    if (currentHotendTemp == hotend && currentBedTemp == bed) return;
+
     currentHotendTemp = hotend;
     currentBedTemp = bed;
 
@@ -418,15 +420,16 @@ void ui_updateStatus(const String& status) {
 // Animation callback for flashing red during connection
 static bool connectFlashOn = true;
 static lv_anim_t connectAnim;
+static uint32_t connectFlashColor = 0x00FFFF;
 
 static void anim_connect_flash_cb(void* var, int32_t v) {
     lv_obj_t* arc = (lv_obj_t*)var;
     if (arc) {
-        // Toggle between red and dark red (dim)
         if (connectFlashOn) {
-            lv_obj_set_style_arc_color(arc, lv_color_hex(0xFF0000), 0);  // Bright red
+            lv_obj_set_style_arc_color(arc, lv_color_hex(connectFlashColor), 0);
         } else {
-            lv_obj_set_style_arc_color(arc, lv_color_hex(0x330000), 0);  // Dim red
+            // Toggle to black/off for a clear pulsing effect
+            lv_obj_set_style_arc_color(arc, lv_color_hex(0x000000), 0);
         }
         connectFlashOn = !connectFlashOn;
     }
@@ -434,6 +437,7 @@ static void anim_connect_flash_cb(void* var, int32_t v) {
 
 void ui_setConnecting() {
     if (!statusArc) return;
+    connectFlashColor = 0x00FFFF; // Cyan pulse while connecting
     
     // Stop any existing animations
     lv_anim_delete(statusArc, NULL);
@@ -467,6 +471,7 @@ void ui_setConnected() {
 
 void ui_setConnectionFailed() {
     if (!statusArc) return;
+    connectFlashColor = 0xFF0000; // Red pulse for failure
     
     // Stop any existing animations
     lv_anim_delete(statusArc, NULL);
