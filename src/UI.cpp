@@ -234,10 +234,10 @@ void ui_createMainScreen() {
     lv_obj_align(statusArc, LV_ALIGN_CENTER, 0, 0);
 
     // Animation for status arc
-    const int animDuration = 200; // ms per direction
+    const int animDuration = 1000; // ms per direction
     lv_anim_init(&animStatus);
     lv_anim_set_var(&animStatus, statusArc);
-    lv_anim_set_values(&animStatus, statusArcDiameter, statusArcDiameter - 8);
+    lv_anim_set_values(&animStatus, statusArcDiameter, statusArcDiameter - 4);
     lv_anim_set_time(&animStatus, animDuration);
     lv_anim_set_path_cb(&animStatus, lv_anim_path_ease_in_out);
     lv_anim_set_exec_cb(&animStatus, anim_status_cb);
@@ -248,7 +248,7 @@ void ui_createMainScreen() {
     // Animation for black separator arc
     lv_anim_init(&animSeparator);
     lv_anim_set_var(&animSeparator, separatorArc);
-    lv_anim_set_values(&animSeparator, separatorArcDiameter, separatorArcDiameter - 8); 
+    lv_anim_set_values(&animSeparator, separatorArcDiameter, separatorArcDiameter - 4); 
     lv_anim_set_time(&animSeparator, animDuration);
     lv_anim_set_path_cb(&animSeparator, lv_anim_path_ease_in_out);
     lv_anim_set_exec_cb(&animSeparator, anim_separator_cb);

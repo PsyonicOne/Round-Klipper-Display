@@ -454,7 +454,7 @@ void loop()
 
         // Check if we should blank the screen
         // Blank if: state is NOT "printing" AND inactive > BLANK_TIMEOUT AND not disconnected
-        bool isPrinting = (state == "printing");
+        bool isPrinting = (state == "printing" || state == "paused");
 
         if (!screenBlanked && !isPrinting && !connectionFailed && inactiveSeconds > SCREEN_BLANK_TIMEOUT_SECS)
         {
