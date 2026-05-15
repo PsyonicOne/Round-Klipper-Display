@@ -157,12 +157,13 @@ pio device monitor
 
 ## Status Arc
 
-The coloured arc below the outer temperature arcs displays the current status of the machine.
+The coloured arc below the outer temperature arcs displays the current status of the machine
 
-- **Fast Flashing Red**: This indicates that either the WIFI or the Moonraker connection failed at startup
+- **Pulsing Cyan**: The device is attempting to connect to WiFi or initializing the Moonraker WebSocket
+- **Pulsing Red**: The connection has failed. This typically happens if the WiFi is unreachable, the Moonraker host is offline, or the API Key provided is incorrect
 - **Solid Red**: The previous print failed or was canceled
-- **Solid Greed**: The previous print completed successfully or the machine is in idle
-- **Slow Blue Movement**: The machine is currently printing (little bit of pizazz 🤩)
+- **Solid Green**: The machine is currently idle or the previous print completed successfully
+- **Animated Blue**: The machine is currently printing (little bit of pizazz 🤩)
 
 ## Dependencies
 These should be automatically downloaded when you open the project with PlatformIO running in VSCode.
