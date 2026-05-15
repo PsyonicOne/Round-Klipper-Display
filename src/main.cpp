@@ -441,7 +441,11 @@ void loop()
         if (!screenBlanked)
         {
             ui_updateTemperatures(hotendTemp, bedTemp);
-            ui_updateStatus(state);
+            // Only update machine status arc if connection is healthy.
+            // This prevents the "standby" status from overriding the "connecting" animation.
+            if (!connectionFailed) {
+                ui_updateStatus(state);
+            }
         }
 
         // Screen blanking logic

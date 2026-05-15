@@ -418,20 +418,18 @@ void ui_updateStatus(const String& status) {
 }
 
 // Animation callback for flashing red during connection
-static bool connectFlashOn = true;
 static lv_anim_t connectAnim;
 static uint32_t connectFlashColor = 0x00FFFF;
 
 static void anim_connect_flash_cb(void* var, int32_t v) {
     lv_obj_t* arc = (lv_obj_t*)var;
     if (arc) {
-        if (connectFlashOn) {
+        if (v > 500) {
             lv_obj_set_style_arc_color(arc, lv_color_hex(connectFlashColor), 0);
         } else {
             // Toggle to black/off for a clear pulsing effect
             lv_obj_set_style_arc_color(arc, lv_color_hex(0x000000), 0);
         }
-        connectFlashOn = !connectFlashOn;
     }
 }
 
@@ -441,19 +439,19 @@ void ui_setConnecting() {
     
     // Stop any existing animations
     lv_anim_delete(statusArc, NULL);
+    currentPrintStatus = "connecting"; // Reset to allow state transitions to trigger animations later
     
-    // Initialize flashing animation - 200ms interval
-    connectFlashOn = true;
+    // Initialize flashing animation - toggle based on value (0-1000)
     lv_anim_init(&connectAnim);
     lv_anim_set_var(&connectAnim, statusArc);
-    lv_anim_set_values(&connectAnim, 0, 1);
-    lv_anim_set_time(&connectAnim, 200);  // 200ms per flash
+    lv_anim_set_values(&connectAnim, 0, 1000);
+    lv_anim_set_time(&connectAnim, 400);  // 400ms cycle
     lv_anim_set_path_cb(&connectAnim, lv_anim_path_linear);
     lv_anim_set_exec_cb(&connectAnim, anim_connect_flash_cb);
     lv_anim_set_repeat_count(&connectAnim, LV_ANIM_REPEAT_INFINITE);
     lv_anim_start(&connectAnim);
     
-    Serial.print("Connecting...");
+    Serial.println("Connecting...");
 }
 
 void ui_setConnected() {
@@ -475,13 +473,13 @@ void ui_setConnectionFailed() {
     
     // Stop any existing animations
     lv_anim_delete(statusArc, NULL);
+    currentPrintStatus = "failed";
     
     // Start flashing red animation (keep flashing)
-    connectFlashOn = true;
     lv_anim_init(&connectAnim);
     lv_anim_set_var(&connectAnim, statusArc);
-    lv_anim_set_values(&connectAnim, 0, 1);
-    lv_anim_set_time(&connectAnim, 200);  // 200ms per flash
+    lv_anim_set_values(&connectAnim, 0, 1000);
+    lv_anim_set_time(&connectAnim, 400);  // 400ms cycle
     lv_anim_set_path_cb(&connectAnim, lv_anim_path_linear);
     lv_anim_set_exec_cb(&connectAnim, anim_connect_flash_cb);
     lv_anim_set_repeat_count(&connectAnim, LV_ANIM_REPEAT_INFINITE);
